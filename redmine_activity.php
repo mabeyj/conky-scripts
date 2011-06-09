@@ -95,7 +95,8 @@ function output_entry(SimpleXMLElement $entry)
 			$message = comment($title_parts[4]);
 
 			echo '${goto 70}${color2}Revision$color ', truncate($number, 8), "\n",
-				'${font Ubuntu:size=7}${offset 70}${color3}', $message, '$color', "\n";
+				'${font Ubuntu:size=7}${offset 70}${color3}', $message,
+				'$color$font', "\n";
 		break;
 		default:
 			echo 'Unknown update';
