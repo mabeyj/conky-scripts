@@ -5,8 +5,8 @@ $MAX_ENTRIES = 15;
 
 $xml = parse_feed($URL);
 
-echo '${color1}Redmine activity$color', "\n",
-	'${color2}Last updated:$color ',
+echo '${color1}Redmine activity$color',
+	'${alignr}${color2}Last updated:$color ',
 	date('F j, Y @ g:i A', strtotime($xml->updated)), "\n";
 
 for ($i = 0; $i < count($xml->entry) AND $i < $MAX_ENTRIES; $i++)
@@ -36,10 +36,11 @@ function output_entry(SimpleXMLElement $entry)
 	preg_match('/^(.+?) - (\w+) ([^:]+): (.+)/', $entry->title, $title_parts);
 	$project = $title_parts[1];
 
-	// ${goto} lightens the outline for some reason
-	echo '$hr', "\n", $date,
-		'${tab 35}${color2}Project:$color ', escape($project),
-		'${tab 175}${color2}Author:$color ', escape($entry->author->name), '${tab 100}';
+	echo '${color #222222}$hr', "\n",
+		'${font Ubuntu:size=10}${color1}', $date, '$color$font',
+		'${voffset -3}',
+		'${goto 280}${color2}Project:$color ', escape(truncate($project, 30)),
+		'${goto 500}${color2}Author:$color ', escape(truncate($entry->author->name, 20));
 
 	switch ($type)
 	{
@@ -47,36 +48,38 @@ function output_entry(SimpleXMLElement $entry)
 			$tracker = $title_parts[2];
 			$summary = $title_parts[4];
 
-			$comment = sanitize($entry->content, 100);
+			$comment = comment($entry->content);
 
-			echo '${color2}Issue \#${color}', $number,  "\n",
-				escape($summary);
+			echo '${goto 70}${color2}', $tracker, ' \#${color}', $number;
 
 			// Sometimes status is listed in paretheses after issue number
 			if (preg_match('/\(([^)]+)\)/', $title_parts[3], $issue_parts))
 			{
 				$status = $issue_parts[1];
-				echo '${tab 500 0}${color2}Status:$color ', escape($status);
+				echo '${goto 170}${color2}Status:$color ', escape($status);
 			}
 
-			echo "\n";
+			echo "\n", '${offset 70}', escape($summary), "\n";
 
 			if (strlen($comment))
 			{
-				echo '${color3}', $comment, '$color', "\n";
+				echo '${font Ubuntu:size=7}${offset 70}${color3}', $comment,
+					'$color$font', "\n";
 			}
 		break;
 		case 'revisions':
 			// Redmine truncates the commit message
 			$message = $title_parts[4];
 
-			echo '${color2}Revision$color ', $number, "\n",
+			echo '${color2}Revision$color ', truncate($number, 8), "\n",
 				'${color3}', escape($message), '$color', "\n";
 		break;
 		default:
 			echo 'Unknown update';
 		break;
 	}
+
+	echo '${voffset -5}';
 }
 
 function escape($text)
@@ -86,18 +89,25 @@ function escape($text)
 	return $text;
 }
 
-function sanitize($text, $length)
+function truncate($text, $length)
+{
+	if (strlen($text) > $length)
+	{
+		return substr($text, 0, $length-1).'…';
+	}
+
+	return $text;
+}
+
+function comment($text)
 {
 	$text = html_entity_decode(trim($text));
 	$text = str_replace('<br />', ' ', $text);
 	$text = strip_tags($text);
 	$text = preg_replace('/[\n\r\t]/', ' ', $text);
 	$text = preg_replace('/  /', ' ', $text);
+	$text = escape(truncate($text, 200));
+	$text = wordwrap($text, 125, "\n".'${offset 70}');
 
-	if (strlen($text) > $length)
-	{
-		$text = substr($text, 0, $length-1).'…';
-	}
-
-	return escape($text);
+	return $text;
 }
