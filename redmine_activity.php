@@ -38,6 +38,7 @@ function output_entry(SimpleXMLElement $entry)
 	global $STATUS_COLOURS;
 
 	$date = date('g:i A', strtotime($entry->updated));
+	$author = escape(truncate($entry->author->name, 20));
 
 	// Get revision/issue number
 	preg_match('#(issues|revisions)/(\w+)#', $entry->id, $id_parts);
@@ -45,13 +46,17 @@ function output_entry(SimpleXMLElement $entry)
 
 	// Get project
 	preg_match('/^(.+?) - (\w+) ([^:]+): (.+)/', $entry->title, $title_parts);
-	$project = $title_parts[1];
+	$project = escape(truncate($title_parts[1], 30));
 
 	echo '${color #222222}$hr', "\n",
 		'${font Ubuntu:size=10}${color1}', $date, '$color$font',
 		'${voffset -3}',
-		'${goto 280}${color2}Project:$color ', escape(truncate($project, 30)),
-		'${goto 500}${color2}Author:$color ', escape(truncate($entry->author->name, 20));
+		'${goto 280}${color2}Project: ',
+		'${color ', colourize($project), '}', $project, '$color',
+		'${goto 500}${color2}Author: ',
+		'${color ', colourize($author), '}', $author, '$color';
+
+	colourize($project);
 
 	switch ($type)
 	{
@@ -128,4 +133,19 @@ function comment($text)
 	$text = wordwrap($text, 125, "\n".'${offset 70}');
 
 	return $text;
+}
+
+function colourize($text)
+{
+	$rgb = array();
+	$hash = md5($text);
+
+	for ($i = 0; $i < 3; $i++)
+	{
+		// Create value from 64 to 255, based on part of hashed text
+		$num = (int) (hexdec(substr($hash, $i * 5, 2)) / 256 * 192 + 64);
+		$rgb[] = sprintf('%02s', dechex($num));
+	}
+
+	return '#'.implode('', $rgb);
 }
