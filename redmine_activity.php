@@ -3,6 +3,15 @@
 $URL = '';
 $MAX_ENTRIES = 15;
 
+$STATUS_COLOURS = array(
+	'New'         => 'blue',
+	'In Progress' => 'yellow',
+	'Feedback'    => 'orange',
+	'Resolved'    => 'light green',
+	'Closed'      => 'green',
+	'Rejected'    => 'red',
+);
+
 $xml = parse_feed($URL);
 
 echo '${color1}Redmine activity$color',
@@ -26,6 +35,8 @@ function parse_feed($url)
 
 function output_entry(SimpleXMLElement $entry)
 {
+	global $STATUS_COLOURS;
+
 	$date = date('g:i A', strtotime($entry->updated));
 
 	// Get revision/issue number
@@ -47,7 +58,6 @@ function output_entry(SimpleXMLElement $entry)
 		case 'issues':
 			$tracker = $title_parts[2];
 			$summary = $title_parts[4];
-
 			$comment = comment($entry->content);
 
 			echo '${goto 70}${color2}', $tracker, ' \#${color}', $number;
@@ -56,7 +66,15 @@ function output_entry(SimpleXMLElement $entry)
 			if (preg_match('/\(([^)]+)\)/', $title_parts[3], $issue_parts))
 			{
 				$status = $issue_parts[1];
-				echo '${goto 170}${color2}Status:$color ', escape($status);
+
+				echo '${goto 170}${color2}Status:$color ';
+
+				if (isset($STATUS_COLOURS[$status]))
+				{
+					echo '${color '.$STATUS_COLOURS[$status].'}';
+				}
+
+				echo escape($status), '$color';
 			}
 
 			echo "\n", '${offset 70}', escape($summary), "\n";
