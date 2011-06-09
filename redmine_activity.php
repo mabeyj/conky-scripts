@@ -92,10 +92,10 @@ function output_entry(SimpleXMLElement $entry)
 		break;
 		case 'revisions':
 			// Redmine truncates the commit message
-			$message = $title_parts[4];
+			$message = comment($title_parts[4]);
 
-			echo '${color2}Revision$color ', truncate($number, 8), "\n",
-				'${color3}', escape($message), '$color', "\n";
+			echo '${goto 70}${color2}Revision$color ', truncate($number, 8), "\n",
+				'${font Ubuntu:size=7}${offset 70}${color3}', $message, '$color', "\n";
 		break;
 		default:
 			echo 'Unknown update';
