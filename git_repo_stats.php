@@ -28,7 +28,8 @@ foreach ($config->repositories as $path)
 	if ($total > 0)
 	{
 		echo '${color #222222}${voffset -4}$hr', "\n",
-			'${color1}', realpath($path), '$color', "\n";
+			'${color1}', realpath($path), '${color2}${alignr}',
+			'Branch:$color ', get_branch($repo), '$color', "\n";
 
 		section('Staged', $staged);
 		echo '${offset 20}';
@@ -56,6 +57,14 @@ function get_stats(VersionControl_Git $repo, $staged)
 		'insertions' => (int) $insertions,
 		'deletions'  => (int) $deletions,
 	);
+}
+
+function get_branch(VersionControl_Git $repo)
+{
+	$output = $repo->getCommand('branch')->execute();
+	preg_match('/^\* (\w+)/', $output, $matches);
+
+	return isset($matches[1]) ? $matches[1] : '(None)';
 }
 
 function section($name, $stats)
