@@ -1,0 +1,12 @@
+{
+	"atom_url": "",
+	"max_entries": 15,
+	"status_colours": {
+		"New":         "blue",
+		"In Progress": "yellow",
+		"Feedback":    "orange",
+		"Resolved":    "light green",
+		"Closed":      "green",
+		"Rejected":    "red"
+	}
+}

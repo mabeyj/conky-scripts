@@ -1,26 +1,22 @@
 <?php
 
-$URL = '';
-$MAX_ENTRIES = 15;
+$config = json_decode(file_get_contents('redmine_activity.json'));
 
-$STATUS_COLOURS = array(
-	'New'         => 'blue',
-	'In Progress' => 'yellow',
-	'Feedback'    => 'orange',
-	'Resolved'    => 'light green',
-	'Closed'      => 'green',
-	'Rejected'    => 'red',
-);
+if ( ! isset($config))
+{
+	echo "Failed to read config file\n";
+	exit(1);
+}
 
-$xml = parse_feed($URL);
+$xml = parse_feed($config->atom_url);
 
 echo '${color1}Redmine activity$color',
 	'${alignr}${color2}Last updated:$color ',
 	date('F j, Y @ g:i A', strtotime($xml->updated)), "\n";
 
-for ($i = 0; $i < count($xml->entry) AND $i < $MAX_ENTRIES; $i++)
+for ($i = 0; $i < count($xml->entry) AND $i < $config->max_entries; $i++)
 {
-	output_entry($xml->entry[$i]);
+	output_entry($xml->entry[$i], (array) $config->status_colours);
 }
 
 function parse_feed($url)
@@ -33,10 +29,8 @@ function parse_feed($url)
 	return new SimpleXMLElement($raw_xml);
 }
 
-function output_entry(SimpleXMLElement $entry)
+function output_entry(SimpleXMLElement $entry, array $status_colours)
 {
-	global $STATUS_COLOURS;
-
 	$date = date('g:i A', strtotime($entry->updated));
 	$author = escape(truncate($entry->author->name, 20));
 
@@ -74,9 +68,9 @@ function output_entry(SimpleXMLElement $entry)
 
 				echo '${goto 170}${color2}Status:$color ';
 
-				if (isset($STATUS_COLOURS[$status]))
+				if (isset($status_colours[$status]))
 				{
-					echo '${color '.$STATUS_COLOURS[$status].'}';
+					echo '${color '.$status_colours[$status].'}';
 				}
 
 				echo escape($status), '$color';

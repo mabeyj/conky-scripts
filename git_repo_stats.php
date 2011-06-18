@@ -6,7 +6,7 @@ $config = json_decode(file_get_contents('git_repo_stats.json'));
 
 if ( ! isset($config))
 {
-	echo "Failed to read config\n";
+	echo "Failed to read config file\n";
 	exit(1);
 }
 
