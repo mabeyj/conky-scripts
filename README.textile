@@ -1,0 +1,27 @@
+h1. Conky scripts
+
+h2. Configuration
+
+All configuration files are in JSON format.  Example configuration files are
+named @*.json.example@.  Copy these to @*.json@ and modify them.
+
+h2. Scripts
+
+h3. @system_stats@
+
+Displays basic information about system resources.
+
+h3. @redmine_activity@
+
+Displays entries from Redmine's "Overall Activity" ATOM feed.
+
+h3. @git_repo_stats@
+
+Displays statistics for one or more Git repositories specified in its
+configuration file, including:
+
+* The current checked-out branch
+* Amount of staged and unstaged changes (files modified, insertions, and
+  deletions)
+
+Repositories with no changes are not displayed.
