@@ -1,0 +1,38 @@
+alignment bottom_left
+background yes
+double_buffer yes
+
+# Borders and outlines
+default_color white
+default_outline_color black
+draw_graph_borders yes
+draw_outline yes
+
+# Font
+use_xft yes
+xftfont 16bit:size=48
+
+# Window settings
+own_window yes
+own_window_transparent no
+own_window_argb_visual yes
+own_window_argb_value 150
+own_window_hints undecorated,sticky,below,skip_taskbar,skip_pager
+
+cpu_avg_samples 2
+use_xft yes
+gap_x 90
+gap_y 35
+net_avg_samples 2
+no_buffers yes
+out_to_console no
+out_to_stderr no
+extra_newline no
+update_interval 1
+uppercase no
+use_spacer none
+show_graph_scale no
+show_graph_range no
+
+TEXT
+${goto 13}${voffset 6}${color black}${time %Y-%m-%d %l:%M:%S %p}${goto 8}${voffset -2}${execp php time2colour.php}${time %Y-%m-%d %l:%M:%S %p}
