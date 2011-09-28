@@ -1,10 +1,21 @@
--- Outputs current uptime
+---
+-- Utility functions.
+--
+-- @author Jimmy Mabey
+
+---
+-- Outputs current uptime.
+--
+-- @return Conky string
 function conky_uptime()
 	return '${voffset 4}${color1}Uptime$color'
 	     ..'${goto 60}${font 16bit:size=12}'..pad('${uptime}', 14)..'$font'
 end
 
+---
 -- Outputs CPU usage.
+--
+-- @return Conky string
 function conky_cpus()
 	local start = 40
 	local position = start
@@ -37,7 +48,10 @@ function conky_cpus()
 	return output..'$font'
 end
 
+---
 -- Outputs memory usage.
+--
+-- @return Conky string
 function conky_memory()
 	return '${color1}Memory$color'
 	     ..'${goto 60}${font 16bit:size=12}${mem}/${memmax}'
@@ -45,7 +59,10 @@ function conky_memory()
 	     ..'$color4${voffset -10}${memgraph 20,200 000000 00e675 -t}$color'
 end
 
+---
 -- Outputs load averages.
+--
+-- @return Conky string
 function conky_load()
 	-- Not sure why graph needs a voffset
 	return '${color1}Load$color'
@@ -56,7 +73,12 @@ function conky_load()
 	     ..'$color'
 end
 
+---
 -- Pads and right-aligns a parsed Conky string to the given number of spaces.
+--
+-- @param command      Conky string
+-- @param num_spacing  Amount of padding
+-- @return String
 function pad(command, num_spaces)
 	return string.format('%'..num_spaces..'s', conky_parse(command))
 end

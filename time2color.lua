@@ -1,3 +1,12 @@
+---
+-- Time to color converter library for Conky.
+--
+-- @author Jimmy Mabey
+
+---
+-- Sets Conky text color based on current time.
+--
+-- @return Conky ${color} string
 function conky_time2color()
 	local day_start = os.time({
 		year   = os.date('%Y'),
@@ -27,6 +36,15 @@ function conky_time2color()
 	return '${color '..color..'}'
 end
 
+---
+-- Returns a color for a particular time based on a two-color gradient.
+--
+-- @param seconds    Time in seconds
+-- @param start_sec  Seconds when gradient begins
+-- @param start_rgb  Start gradient color {r, g, b}
+-- @param end_sec    Seconds when gradient ends
+-- @param end_rgb    End gradient color {r, g, b}
+-- @return Hex color code
 function gradient(seconds, start_sec, start_rgb, end_sec, end_rgb)
 	local hex = '#'
 
